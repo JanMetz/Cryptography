@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <regex>
 
 
 Playfair::Playfair(const std::string& key) 
@@ -41,6 +42,9 @@ void Playfair::validateKey(const std::string& key)
 
 std::string Playfair::cipher(const std::string &plainText) const
 {
+	if (std::regex_match(plainText, std::regex(".*[^a-zA-Z].*")))
+		throw "Invalid message provided!";
+	
 	auto chopped = chopMessage(plainText);
 
 	std::string codedText("");
@@ -57,6 +61,9 @@ std::string Playfair::cipher(const std::string &plainText) const
 
 std::string Playfair::decipher(const std::string &cipheredText) const
 {
+	if (std::regex_match(plainText, std::regex(".*[^a-zA-Z].*")))
+		throw "Invalid message provided!";
+	
 	auto chopped = chopMessage(cipheredText);
 
 	std::string plainText("");
