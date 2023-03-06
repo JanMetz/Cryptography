@@ -1,4 +1,4 @@
-﻿#include "playfair.hpp"
+#include "playfair.hpp"
 
 #include <string>
 #include <array>
@@ -16,7 +16,10 @@ Playfair::Playfair(const std::string& key)
 
 void Playfair::validateKey(const std::string& key)
 {
-    mKey = key;
+	if (checkForIllegalChars(key))
+		throw "Invalid message provided!";
+	
+    	mKey = key;
 	if (mKey.size() > 25)
 		throw "Invalid key provided!";
 
@@ -40,10 +43,15 @@ void Playfair::validateKey(const std::string& key)
 	}
 }
 
+bool Playfair::checkForIllegalChars(const std::string &text)
+{
+	return std::regex_match(text, std::regex(".*[^a-zA-Z].*"));	
+}
+
 std::string Playfair::cipher(const std::string &plainText) const
 {
-	if (std::regex_match(plainText, std::regex(".*[^a-zA-Z].*")))
-		throw "Invalid message provided!";
+	if (checkForIllegalChars(plainText))
+		return "INVALID MESSAGE";
 	
 	auto chopped = chopMessage(plainText);
 
@@ -61,8 +69,8 @@ std::string Playfair::cipher(const std::string &plainText) const
 
 std::string Playfair::decipher(const std::string &cipheredText) const
 {
-	if (std::regex_match(plainText, std::regex(".*[^a-zA-Z].*")))
-		throw "Invalid message provided!";
+	if (checkForIllegalChars(cipheredText))
+		return "INVALID MESSAGE";
 	
 	auto chopped = chopMessage(cipheredText);
 
@@ -88,18 +96,18 @@ std::string Playfair::getCodedLetters(const std::pair<int, int> &in1, const std:
 
 	if (row1 == row2)
 	{
-		return std::string(1, static_cast<char>(mMatrix[row1][(col1 + addVal) % 5])) + 
-		       std::string(1, static_cast<char>(mMatrix[row2][(col2 + addVal) % 5]));
+		return std::string(1, mMatrix[row1][(col1 + addVal) % 5]) + 
+		       std::string(1, mMatrix[row2][(col2 + addVal) % 5]);
 	}
 	else if (col1 == col2)
 	{
-		return std::string(1, static_cast<char>(mMatrix[(row1 + addVal) % 5][col1])) +
-		       std::string(1, static_cast<char>(mMatrix[(row2 + addVal) % 5][col2]));
+		return std::string(1, mMatrix[(row1 + addVal) % 5][col1]) +
+		       std::string(1, mMatrix[(row2 + addVal) % 5][col2]);
 	}
 	else
 	{
-		return std::string(1, static_cast<char>(mMatrix[row1][col2])) +
-		       std::string(1, static_cast<char>(mMatrix[row2][col1]));
+		return std::string(1, mMatrix[row1][col2]) +
+		       std::string(1, mMatrix[row2][col1]);
 	}
 
 	return "";
