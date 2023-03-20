@@ -80,7 +80,7 @@ def main():
     if kA != kB:
         print('ERROR! GENERATED KEYS ARE DIFFERENT!')
         
-    print(f'Session key (k): {kA}')
+    print(f'Common session key (k): {kA}')
 
     
 if __name__ == '__main__':
