@@ -110,7 +110,18 @@ def profileHashFunctions():
         checkHashes(file)
 
 def checkForCollisions():
-    pass
+    allFirst12Bits = set({})
+    for i in range(10000000):
+        hashed = str(hashlib.md5(str(i).encode()).digest())
+        tab = hashed.split(r'\x')
+        first12bits = str(tab[1:13])
+        s1 = len(allFirst12Bits)
+        allFirst12Bits.add(first12bits)
+        s2 = len(allFirst12Bits)
+
+        if s1 == s2:
+            print('Collision!')
+            return
 
 
 def main():
