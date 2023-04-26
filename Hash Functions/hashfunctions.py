@@ -1,24 +1,28 @@
 import hashlib
 import time
+from matplotlib import pyplot as plt
 
+x = []
+y = []
+y2 = []
 
-def printHash(type, hash):
-    type = type.replace('hashlib.', '')
-    print(f'\tUsed hash function: {type}')
-    print(f'\tLength of produced hash: {len(hash.hexdigest())}')
-
+def printGraph(htype, hlen, extime):
+    htype = htype.replace('hashlib.', '')
+    x.append(htype)
+    y.append(extime)
+    y2.append(hlen)
 
 def readFile(filename):
     with open(filename, 'r') as f:
              return f.read().encode()
 
 
-def printExeTime(start_time, end_time):
+def getExeTime(start_time, end_time):
     elapsed = end_time - start_time
-    if elapsed > 0.0:
-        print(f'\tExecution time: {elapsed} seconds\n')
+    if elapsed > 0.000:
+        return elapsed
     else:
-        print(f'\tExecution time: less than measuring precission\n')
+        return 0.001
 
 
 def checkHash(filename, hashfun):
@@ -26,8 +30,8 @@ def checkHash(filename, hashfun):
     start_time = time.time()
     hashed = eval(hashfun)(file_content)
     end_time = time.time()
-    printHash(hashfun, hashed)
-    printExeTime(start_time, end_time)
+    extime = getExeTime(start_time, end_time)
+    printGraph(hashfun, len(hashed.hexdigest()), extime)
 
 
 def checkSHA2Hashes(filename):
@@ -45,21 +49,28 @@ def checkSHA3Hashes(filename):
     
 
 def checkHashes(filename):
-    print('\n*****NEW FILE*****\n')
     content = readFile(filename)
-    print(f'For string of length {len(content)}:')
 
-    print('\n*****SHA1 & MD5 HASHES*****\n')
     checkHash(filename, 'hashlib.md5')
     checkHash(filename, 'hashlib.sha1')
-
-    print('\n*****SHA2 HASHES*****\n')
     checkSHA2Hashes(filename)
-
-    print('\n*****SHA3 HASHES*****\n')
     checkSHA3Hashes(filename)
-    
-    print('\n*****END*****\n')
+
+    global x, y, y2
+
+    plt.clf()
+    plt.plot(x, y)
+    plt.title(f'Exection time for string of length {len(content)}')
+    plt.show()
+
+    plt.clf()
+    plt.plot(x, y2)
+    plt.title(f'Hash length for string of length {len(content)}')
+    plt.show()
+
+    x = []
+    y = []
+    y2 = []
 
 
 def checkStrictAvalancheCriterium():
@@ -105,7 +116,7 @@ def hashUserInput():
 
 
 def profileHashFunctions():
-    input_files = ['file1.txt', 'file2.txt']
+    input_files = ['file1.txt', 'file2.txt'] # 
     for file in input_files:
         checkHashes(file)
 
