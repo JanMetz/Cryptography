@@ -14,13 +14,13 @@ def main():
     original = VisualCryptography.read_image('xyz.jpg')
     part1, part2 = vc.split_image(original)
     combined = vc.combine_images(part1, part2)
-    rescaled = vc.rescale_to_original(combined)
+    rescaled = vc.rescale_and_deinterfere(combined)
 
     plot(original, 'Original')
     plot(part1, 'Part 1')
     plot(part2, 'Part 2')
     plot(combined, 'Combined')
-    plot(rescaled, 'Rescaled')
+    plot(rescaled, 'Rescaled and De-interfered')
 
 
 if __name__ == '__main__':
