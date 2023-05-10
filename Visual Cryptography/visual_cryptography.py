@@ -18,7 +18,7 @@ class VisualCryptography:
 
     def is_colour2_pixel(self, rgb):
         middle = (self.colour1 + self.colour2) // 2
-        return np.all(rgb <= middle)
+        return np.all(rgb < middle)
 
     def paint_together(self, row1, row2):
         if VisualCryptography.draw():
@@ -63,7 +63,7 @@ class VisualCryptography:
         for i in range(len(i1)):
             row = []
             for j in range(len(i1[0])):
-                if self.is_colour2_pixel(i1[i][j]) and self.is_colour2_pixel(i2[i][j]):
+                if self.is_colour2_pixel(i1[i][j]) or self.is_colour2_pixel(i2[i][j]):
                     row.append(self.colour2)
                 else:
                     row.append(self.colour1)
@@ -72,15 +72,15 @@ class VisualCryptography:
 
         return np.array(img)
 
-    def rescale_to_original(self, img):
+    def rescale_and_deinterfere(self, img):
         rescaled = []
         for i in range(len(img)):
             row = []
             for j in range(0, len(img[0]), 2):
                 if self.is_colour2_pixel((img[i][j] + img[i][j + 1]) // 2):
-                    row.append(self.colour2)
-                else:
                     row.append(self.colour1)
+                else:
+                    row.append(self.colour2)
 
             rescaled.append(row)
 
